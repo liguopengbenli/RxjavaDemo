@@ -38,8 +38,8 @@ public class MainActivity extends AppCompatActivity {
 
         myObservable = Observable.just(greeting);
 
-        myObservable.subscribeOn(Schedulers.io());
-        myObservable.observeOn(AndroidSchedulers.mainThread());
+        //myObservable.subscribeOn(Schedulers.io());
+        //myObservable.observeOn(AndroidSchedulers.mainThread());
 
 
         /*myObserver = new Observer<String>() {
@@ -91,8 +91,14 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-        myObservable.subscribe(myObserver);
-        compositeDisposable.add(myObserver);
+       // myObservable.subscribe(myObserver);
+       // compositeDisposable.add(myObserver);
+        compositeDisposable.add(
+        myObservable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(myObserver) // return a observer
+        );
 
         myObserver2 = new DisposableObserver<String>() {
             @Override
@@ -114,9 +120,12 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-        myObservable.subscribe(myObserver2);
-        compositeDisposable.add(myObserver2);
-
+        //myObservable.subscribe(myObserver2);
+        //compositeDisposable.add(myObserver2);
+        compositeDisposable.add(
+                myObservable
+                        .subscribeWith(myObserver2) // return a observer
+        );
     }
 
     @Override
@@ -125,6 +134,6 @@ public class MainActivity extends AppCompatActivity {
         //disposable.dispose();
         //myObserver.dispose();
         //myObserver2.dispose();
-        compositeDisposable.clear();
+        compositeDisposable.clear(); // clear the disposables held, if use dispose will destroy the composite
     }
 }
