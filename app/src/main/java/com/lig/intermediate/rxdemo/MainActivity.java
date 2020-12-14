@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private String greeting="Hello from RxJava";
     private Observable<String> myObservable;
     private Observer<String> myObserver;
+    private Disposable disposable;
     private TextView textView;
 
     @Override
@@ -32,14 +33,13 @@ public class MainActivity extends AppCompatActivity {
 
         myObservable.subscribeOn(Schedulers.io());
         myObservable.observeOn(AndroidSchedulers.mainThread());
-        
+
 
         myObserver = new Observer<String>() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
                 Log.i("RXdemo", "onSubscribe");
-
-
+                disposable = d;
             }
 
             @Override
@@ -62,7 +62,13 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        myObservable.subscribe(myObserver);
+        myObservable.subscribe(myObserver); // it return a disposibl
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        disposable.dispose();
     }
 }
