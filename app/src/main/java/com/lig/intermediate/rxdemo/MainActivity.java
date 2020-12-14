@@ -12,6 +12,7 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import static android.webkit.ConsoleMessage.MessageLevel.LOG;
@@ -19,8 +20,8 @@ import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 public class MainActivity extends AppCompatActivity {
     private String greeting="Hello from RxJava";
     private Observable<String> myObservable;
-    private Observer<String> myObserver;
-    private Disposable disposable;
+    private DisposableObserver<String> myObserver;
+    //private Disposable disposable;
     private TextView textView;
 
     @Override
@@ -35,11 +36,11 @@ public class MainActivity extends AppCompatActivity {
         myObservable.observeOn(AndroidSchedulers.mainThread());
 
 
-        myObserver = new Observer<String>() {
+        /*myObserver = new Observer<String>() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
                 Log.i("RXdemo", "onSubscribe");
-                disposable = d;
+                //disposable = d;
             }
 
             @Override
@@ -62,13 +63,35 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        myObservable.subscribe(myObserver); // it return a disposibl
+        */
 
+        myObserver = new DisposableObserver<String>() {
+            @Override
+            public void onNext(@NonNull String s) {
+                Log.i("RXdemo", "onNext");
+                textView.setText(s);
+
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Log.i("RXdemo", "onError");
+
+            }
+
+            @Override
+            public void onComplete() {
+                Log.i("RXdemo", "onComplete");
+
+            }
+        };
+        myObservable.subscribe(myObserver);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        disposable.dispose();
+        //disposable.dispose();
+        myObserver.dispose();
     }
 }
