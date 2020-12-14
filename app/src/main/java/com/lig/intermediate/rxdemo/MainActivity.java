@@ -6,10 +6,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
@@ -26,6 +29,10 @@ public class MainActivity extends AppCompatActivity {
         textView = findViewById(R.id.tvGretting);
 
         myObservable = Observable.just(greeting);
+
+        myObservable.subscribeOn(Schedulers.io());
+        myObservable.observeOn(AndroidSchedulers.mainThread());
+        
 
         myObserver = new Observer<String>() {
             @Override
