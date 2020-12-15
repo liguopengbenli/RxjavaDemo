@@ -20,11 +20,11 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
 public class MainActivity extends AppCompatActivity {
-    private String greeting="Hello from RxJava";
-    private Observable<String> myObservable;
+    private String[] greetings= {"Hello A", "Hello B", "Hello C"};
+    private Observable<String[]> myObservable;
 
-    private DisposableObserver<String> myObserver;
-    private DisposableObserver<String> myObserver2;
+    private DisposableObserver<String[]> myObserver;
+    private DisposableObserver<String[]> myObserver2;
 
     //private Disposable disposable;
     private TextView textView;
@@ -36,42 +36,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         textView = findViewById(R.id.tvGretting);
 
-        myObservable = Observable.just(greeting);
-
-        myObserver = new DisposableObserver<String>() {
-            @Override
-            public void onNext(@NonNull String s) {
-                Log.i("RXdemo", "onNext");
-                textView.setText(s);
-
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-                Log.i("RXdemo", "onError");
-
-            }
-
-            @Override
-            public void onComplete() {
-                Log.i("RXdemo", "onComplete");
-
-            }
-        };
+        myObservable = Observable.just(greetings);
 
         compositeDisposable.add(
         myObservable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(myObserver) // return a observer
+                .subscribeWith(getObserver()) // return a observer
         );
 
-        myObserver2 = new DisposableObserver<String>() {
-            @Override
-            public void onNext(@NonNull String s) {
-                Log.i("RXdemo", "onNext");
-                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
+        myObserver2 = new DisposableObserver<String[]>() {
 
+
+            @Override
+            public void onNext(String @NonNull [] strings) {
+                Log.i("RXdemo", "onNext" + strings);
             }
 
             @Override
@@ -96,5 +75,28 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         compositeDisposable.clear(); // clear the disposables held, if use dispose will destroy the composite
+    }
+
+    private DisposableObserver getObserver(){
+        myObserver = new DisposableObserver<String[]>() {
+            @Override
+            public void onNext(String @NonNull [] strings) {
+                Log.i("RXdemo", "onNext" + strings);
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Log.i("RXdemo", "onError");
+
+            }
+
+            @Override
+            public void onComplete() {
+                Log.i("RXdemo", "onComplete");
+
+            }
+        };
+
+        return myObserver;
     }
 }
