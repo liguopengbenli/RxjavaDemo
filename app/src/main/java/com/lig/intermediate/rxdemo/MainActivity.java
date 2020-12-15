@@ -21,10 +21,11 @@ import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
 public class MainActivity extends AppCompatActivity {
     private String[] greetings= {"Hello A", "Hello B", "Hello C"};
-    private Observable<String> myObservable;
+    private Integer[] nums={1,2,3,4,5};
+    private Observable<Integer> myObservable;
 
-    private DisposableObserver<String> myObserver;
-    private DisposableObserver<String> myObserver2;
+    private DisposableObserver<Integer> myObserver;
+    private DisposableObserver<Integer> myObserver2;
 
 
     //private Disposable disposable;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         textView = findViewById(R.id.tvGretting);
 
         //myObservable = Observable.just("Hello 1", "Hello 2", "Hello 3");
-        myObservable = Observable.fromArray(greetings);
+        myObservable = Observable.fromArray(nums);
 
         compositeDisposable.add(
         myObservable
@@ -47,10 +48,10 @@ public class MainActivity extends AppCompatActivity {
                 .subscribeWith(getObserver()) // return a observer
         );
 
-        myObserver2 = new DisposableObserver<String>() {
+        myObserver2 = new DisposableObserver<Integer>() {
 
             @Override
-            public void onNext(String string) {
+            public void onNext(Integer string) {
                 Log.i("RXdemo", "onNext" + string);
             }
 
@@ -78,9 +79,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private DisposableObserver getObserver(){
-        myObserver = new DisposableObserver<String>() {
+        myObserver = new DisposableObserver<Integer>() {
             @Override
-            public void onNext(String string) {
+            public void onNext(Integer string) {
                 Log.i("RXdemo", "onNext" + string);
             }
 
