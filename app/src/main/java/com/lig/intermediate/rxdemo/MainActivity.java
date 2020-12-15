@@ -20,11 +20,12 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
 public class MainActivity extends AppCompatActivity {
-    //private String[] greetings= {"Hello A", "Hello B", "Hello C"};
+    private String[] greetings= {"Hello A", "Hello B", "Hello C"};
     private Observable<String> myObservable;
 
     private DisposableObserver<String> myObserver;
     private DisposableObserver<String> myObserver2;
+
 
     //private Disposable disposable;
     private TextView textView;
@@ -36,7 +37,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         textView = findViewById(R.id.tvGretting);
 
-        myObservable = Observable.just("Hello 1", "Hello 2", "Hello 3");
+        //myObservable = Observable.just("Hello 1", "Hello 2", "Hello 3");
+        myObservable = Observable.fromArray(greetings);
 
         compositeDisposable.add(
         myObservable
@@ -78,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     private DisposableObserver getObserver(){
         myObserver = new DisposableObserver<String>() {
             @Override
-            public void onNext(String  string) {
+            public void onNext(String string) {
                 Log.i("RXdemo", "onNext" + string);
             }
 
