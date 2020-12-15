@@ -38,39 +38,6 @@ public class MainActivity extends AppCompatActivity {
 
         myObservable = Observable.just(greeting);
 
-        //myObservable.subscribeOn(Schedulers.io());
-        //myObservable.observeOn(AndroidSchedulers.mainThread());
-
-
-        /*myObserver = new Observer<String>() {
-            @Override
-            public void onSubscribe(@NonNull Disposable d) {
-                Log.i("RXdemo", "onSubscribe");
-                //disposable = d;
-            }
-
-            @Override
-            public void onNext(@NonNull String s) {
-                Log.i("RXdemo", "onNext");
-                textView.setText(s);
-
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-                Log.i("RXdemo", "onError");
-
-            }
-
-            @Override
-            public void onComplete() {
-                Log.i("RXdemo", "onComplete");
-
-            }
-        };
-
-        */
-
         myObserver = new DisposableObserver<String>() {
             @Override
             public void onNext(@NonNull String s) {
@@ -91,8 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-       // myObservable.subscribe(myObserver);
-       // compositeDisposable.add(myObserver);
+
         compositeDisposable.add(
         myObservable
                 .subscribeOn(Schedulers.io())
@@ -120,8 +86,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-        //myObservable.subscribe(myObserver2);
-        //compositeDisposable.add(myObserver2);
         compositeDisposable.add(
                 myObservable
                         .subscribeWith(myObserver2) // return a observer
@@ -131,9 +95,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //disposable.dispose();
-        //myObserver.dispose();
-        //myObserver2.dispose();
         compositeDisposable.clear(); // clear the disposables held, if use dispose will destroy the composite
     }
 }
