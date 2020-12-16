@@ -39,7 +39,8 @@ public class MainActivity extends AppCompatActivity {
         textView = findViewById(R.id.tvGretting);
 
         //myObservable = Observable.just("Hello 1", "Hello 2", "Hello 3");
-        myObservable = Observable.fromArray(nums);
+        //myObservable = Observable.fromArray(nums);
+        myObservable = Observable.range(1, 20);
 
         compositeDisposable.add(
         myObservable
