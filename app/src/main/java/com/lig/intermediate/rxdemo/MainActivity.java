@@ -18,6 +18,7 @@ import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -55,6 +56,13 @@ public class MainActivity extends AppCompatActivity {
                 myObservable
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
+                        .map(new Function<Student, Student>() {
+                            @Override
+                            public Student apply(Student student) throws Throwable {
+                                student.setName(student.getName().toUpperCase());
+                                return student;
+                            }
+                        })
                         .subscribeWith(getObserver()) // return a observer
         );
     }
@@ -63,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
             myObserver = new DisposableObserver<Student>() {
                 @Override
                 public void onNext(Student student) {
-                    Log.i("RXdemo", "onNext" + student.getEmail());
+                    Log.i("RXdemo", "onNext" + student.getName());
                 }
 
                 @Override
