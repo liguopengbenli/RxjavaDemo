@@ -84,16 +84,18 @@ public class MainActivity extends AppCompatActivity {
 
 
         //demonstration of bundle operator
-        Observable<Integer> myObservable2 = Observable.range(1,20);
+        //Observable<Integer> myObservable2 = Observable.range(1,20);
+        Observable<Integer> myObservable2 = Observable.just(1,2,3,7,5,3,5,5,4,4);
         myObservable2.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 //.buffer(4)
-                .filter(new Predicate<Integer>() {
+                /*.filter(new Predicate<Integer>() {
                     @Override
                     public boolean test(Integer integer) throws Throwable {
                         return integer%3==0;
                     }
-                })
+                })*/
+                .distinct() // use to return only distinct value
                 .subscribe(new Observer<Integer>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
