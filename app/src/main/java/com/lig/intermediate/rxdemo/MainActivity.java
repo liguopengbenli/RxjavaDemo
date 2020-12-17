@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
@@ -79,6 +80,35 @@ public class MainActivity extends AppCompatActivity {
                         }) // flatMap to return a new observable, cancatMap do the same and maintient order
                         .subscribeWith(getObserver()) // return a observer
         );
+
+
+        //demonstration of bundle operator
+        Observable<Integer> myObservable2 = Observable.range(1,20);
+        myObservable2.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .buffer(4)
+                .subscribe(new Observer<List<Integer>>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(@NonNull List<Integer> integers) {
+                        Log.i("RXdemo", "onNext" + integers);
+
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
         private DisposableObserver getObserver() {
