@@ -14,6 +14,7 @@ import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.ObservableEmitter;
 import io.reactivex.rxjava3.core.ObservableOnSubscribe;
+import io.reactivex.rxjava3.core.ObservableSource;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -56,13 +57,23 @@ public class MainActivity extends AppCompatActivity {
                 myObservable
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .map(new Function<Student, Student>() {
+                        /*.map(new Function<Student, Student>() {
                             @Override
                             public Student apply(Student student) throws Throwable {
                                 student.setName(student.getName().toUpperCase());
                                 return student;
                             }
-                        })
+                        })*/
+                        .flatMap(new Function<Student, ObservableSource<Student>>() {
+                            @Override
+                            public ObservableSource<Student> apply(Student student) throws Throwable {
+                                Student student1 = new Student();
+                                student1.setName("new Member"+ student.getName());
+
+                                student.setName(student.getName().toUpperCase());
+                                return Observable.just(student, student1);
+                            }
+                        }) // flatMap to return a new observable
                         .subscribeWith(getObserver()) // return a observer
         );
     }
