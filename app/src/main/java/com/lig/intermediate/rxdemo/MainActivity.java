@@ -64,16 +64,19 @@ public class MainActivity extends AppCompatActivity {
                                 return student;
                             }
                         })*/
-                        .flatMap(new Function<Student, ObservableSource<Student>>() {
+                        .concatMap(new Function<Student, ObservableSource<Student>>() {
                             @Override
                             public ObservableSource<Student> apply(Student student) throws Throwable {
                                 Student student1 = new Student();
-                                student1.setName("new Member"+ student.getName());
+                                student1.setName("new Member1"+ student.getName());
+
+                                Student student2 = new Student();
+                                student2.setName("new Member2"+ student.getName());
 
                                 student.setName(student.getName().toUpperCase());
-                                return Observable.just(student, student1);
+                                return Observable.just(student, student1, student2); //merges items emitted by multiple Observables and returns a single Observable
                             }
-                        }) // flatMap to return a new observable
+                        }) // flatMap to return a new observable, cancatMap do the same and maintient order
                         .subscribeWith(getObserver()) // return a observer
         );
     }
