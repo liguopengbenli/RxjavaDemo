@@ -95,7 +95,8 @@ public class MainActivity extends AppCompatActivity {
                         return integer%3==0;
                     }
                 })*/
-                .distinct() // use to return only distinct value
+                //.distinct() // use to return only distinct value
+                .skip(3) // to skip nb items
                 .subscribe(new Observer<Integer>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
