@@ -96,7 +96,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })*/
                 //.distinct() // use to return only distinct value
-                .skip(3) // to skip nb items
+                //.skip(3) // to skip nb items
+                .skipLast(3)
                 .subscribe(new Observer<Integer>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
