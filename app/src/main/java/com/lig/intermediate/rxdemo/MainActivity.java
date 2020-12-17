@@ -21,6 +21,7 @@ import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Function;
+import io.reactivex.rxjava3.functions.Predicate;
 import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -86,16 +87,22 @@ public class MainActivity extends AppCompatActivity {
         Observable<Integer> myObservable2 = Observable.range(1,20);
         myObservable2.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .buffer(4)
-                .subscribe(new Observer<List<Integer>>() {
+                //.buffer(4)
+                .filter(new Predicate<Integer>() {
+                    @Override
+                    public boolean test(Integer integer) throws Throwable {
+                        return integer%3==0;
+                    }
+                })
+                .subscribe(new Observer<Integer>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(@NonNull List<Integer> integers) {
-                        Log.i("RXdemo", "onNext" + integers);
+                    public void onNext(@NonNull Integer integer) {
+                        Log.i("RXdemo", "onNext" + integer);
 
                     }
 
