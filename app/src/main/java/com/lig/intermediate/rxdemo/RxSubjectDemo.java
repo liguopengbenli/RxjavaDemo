@@ -12,6 +12,8 @@ import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.AsyncSubject;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import io.reactivex.rxjava3.subjects.PublishSubject;
 
 
 public class RxSubjectDemo extends AppCompatActivity {
@@ -22,7 +24,9 @@ public class RxSubjectDemo extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        asyncSubjectDemo1();
+        //asyncSubjectDemo2();
+        //behaviourSubjectDemo2();
+        publishSubjectDemo2();
     }
 
     void asyncSubjectDemo1(){
@@ -35,6 +39,80 @@ public class RxSubjectDemo extends AppCompatActivity {
         asyncSubject.subscribe(getSecondObserver());
         asyncSubject.subscribe(getThirdObserver());
     }
+
+    void asyncSubjectDemo2(){
+        AsyncSubject<String> asyncSubject = AsyncSubject.create();
+
+        asyncSubject.subscribe(getFirstObserver());
+        asyncSubject.onNext("JAVA"); // because can act like observable
+        asyncSubject.onNext("KOTLIN");
+        asyncSubject.onNext("XML");
+
+        asyncSubject.subscribe(getSecondObserver());
+        asyncSubject.onNext("KOTLIN");
+        asyncSubject.onComplete();
+
+        asyncSubject.subscribe(getThirdObserver());
+    }
+
+    void behaviourSubjectDemo1(){
+        Observable<String> observable = Observable.just("JAVA", "KOTLIN", "XML", "JSON")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        BehaviorSubject<String> behaviorSubject = BehaviorSubject.create();
+
+        observable.subscribe(behaviorSubject); //asyncSubject only emit the last value of the observable
+        behaviorSubject.subscribe(getFirstObserver());
+        behaviorSubject.subscribe(getSecondObserver());
+        behaviorSubject.subscribe(getThirdObserver());
+    }
+
+    void behaviourSubjectDemo2(){
+        BehaviorSubject<String> behaviorSubject = BehaviorSubject.create();
+
+        behaviorSubject.subscribe(getFirstObserver());
+        behaviorSubject.onNext("JAVA"); // because can act like observable
+        behaviorSubject.onNext("KOTLIN");
+        behaviorSubject.onNext("XML");
+
+        behaviorSubject.subscribe(getSecondObserver()); //behaviourSubject receive the most recent emit item
+        behaviorSubject.onNext("KOTLIN");
+        behaviorSubject.onComplete();
+
+        behaviorSubject.subscribe(getThirdObserver());
+    }
+
+    void publishSubjectDemo1(){
+        Observable<String> observable = Observable.just("JAVA", "KOTLIN", "XML", "JSON")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        PublishSubject<String> publishSubject = PublishSubject.create();
+
+        //PublishSubject emits all the subsequent items at the time of subscription
+        observable.subscribe(publishSubject);
+        publishSubject.subscribe(getFirstObserver());
+        publishSubject.subscribe(getSecondObserver());
+        publishSubject.subscribe(getThirdObserver());
+    }
+
+    void publishSubjectDemo2(){
+        PublishSubject<String> publishSubject = PublishSubject.create();
+
+        publishSubject.subscribe(getFirstObserver());
+        publishSubject.onNext("JAVA"); // because can act like observable
+        publishSubject.onNext("KOTLIN");
+        publishSubject.onNext("XML");
+
+        publishSubject.subscribe(getSecondObserver()); 
+        publishSubject.onNext("KOTLIN");
+        publishSubject.onComplete();
+
+        publishSubject.subscribe(getThirdObserver());
+    }
+
+
 
 
     private Observer<String> getFirstObserver() {
