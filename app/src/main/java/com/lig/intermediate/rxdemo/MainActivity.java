@@ -12,6 +12,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jakewharton.rxbinding4.view.RxView;
+import com.jakewharton.rxbinding4.widget.RxTextView;
+
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
@@ -27,10 +30,12 @@ import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.functions.Predicate;
 import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import kotlin.Unit;
 
 import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
@@ -55,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         viewText = findViewById(R.id.tvInput);
         clearButton = findViewById(R.id.btnClear);
 
-        inputText.addTextChangedListener(new TextWatcher() {
+        /*inputText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -75,6 +80,23 @@ public class MainActivity extends AppCompatActivity {
         clearButton.setOnClickListener(v -> {
             inputText.setText("");
             viewText.setText(" ");
+        });*/
+
+        // Producer & Consumer pattern
+        Disposable disposable1 = RxTextView.textChanges(inputText).subscribe(new Consumer<CharSequence>(){
+            @Override
+            public void accept(CharSequence charSequence) throws Throwable {
+                viewText.setText(charSequence);
+            }
+        });
+
+        Disposable disposable2 = RxView.clicks(clearButton).subscribe(new Consumer<Object>() {
+            @Override
+            public void accept(Object object) throws Throwable {
+                inputText.setText("");
+                viewText.setText("");
+
+            }
         });
 
 
