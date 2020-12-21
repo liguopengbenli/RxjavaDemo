@@ -3,9 +3,16 @@ package com.lig.intermediate.rxdemo;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +40,10 @@ public class MainActivity extends AppCompatActivity {
     private Observable<Student> myObservable;
     private DisposableObserver<Student> myObserver;
 
-    private TextView textView;
+    private TextView viewText;
+    private EditText inputText;
+    private Button clearButton;
+
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
 
@@ -41,7 +51,32 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textView = findViewById(R.id.tvGretting);
+        inputText = findViewById(R.id.etInputField);
+        viewText = findViewById(R.id.tvInput);
+        clearButton = findViewById(R.id.btnClear);
+
+        inputText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                viewText.setText(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        clearButton.setOnClickListener(v -> {
+            inputText.setText("");
+            viewText.setText(" ");
+        });
+
 
         //myObservable = Observable.just("Hello 1", "Hello 2", "Hello 3");
         //myObservable = Observable.fromArray(getStudents());

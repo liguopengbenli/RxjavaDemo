@@ -14,6 +14,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.AsyncSubject;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import io.reactivex.rxjava3.subjects.PublishSubject;
+import io.reactivex.rxjava3.subjects.ReplaySubject;
 
 
 public class RxSubjectDemo extends AppCompatActivity {
@@ -26,7 +27,8 @@ public class RxSubjectDemo extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //asyncSubjectDemo2();
         //behaviourSubjectDemo2();
-        publishSubjectDemo2();
+        //publishSubjectDemo2();
+        replaySubjectDemo2();
     }
 
     void asyncSubjectDemo1(){
@@ -76,7 +78,7 @@ public class RxSubjectDemo extends AppCompatActivity {
         behaviorSubject.onNext("KOTLIN");
         behaviorSubject.onNext("XML");
 
-        behaviorSubject.subscribe(getSecondObserver()); //behaviourSubject receive the most recent emit item
+        behaviorSubject.subscribe(getSecondObserver()); //behaviourSubject emits the most recent emit item
         behaviorSubject.onNext("KOTLIN");
         behaviorSubject.onComplete();
 
@@ -105,11 +107,36 @@ public class RxSubjectDemo extends AppCompatActivity {
         publishSubject.onNext("KOTLIN");
         publishSubject.onNext("XML");
 
-        publishSubject.subscribe(getSecondObserver()); 
+        publishSubject.subscribe(getSecondObserver());
         publishSubject.onNext("KOTLIN");
         publishSubject.onComplete();
 
         publishSubject.subscribe(getThirdObserver());
+    }
+    void replaySubjectDemo1(){
+        Observable<String> observable = Observable.just("JAVA", "KOTLIN", "XML", "JSON");
+        observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+        ReplaySubject<String> replaySubject = ReplaySubject.create();
+
+        observable.subscribe(replaySubject); //ReplaySubject emit all the items, all of them
+        replaySubject.subscribe(getFirstObserver());
+        replaySubject.subscribe(getSecondObserver());
+        replaySubject.subscribe(getThirdObserver());
+    }
+
+    void replaySubjectDemo2(){
+        ReplaySubject<String> replaySubject = ReplaySubject.create();
+
+        replaySubject.subscribe(getFirstObserver());
+        replaySubject.onNext("JAVA"); // because can act like observable
+        replaySubject.onNext("KOTLIN");
+        replaySubject.onNext("XML");
+
+        replaySubject.subscribe(getSecondObserver());
+        replaySubject.onNext("KOTLIN");
+        replaySubject.onComplete();
+
+        replaySubject.subscribe(getThirdObserver());
     }
 
 
